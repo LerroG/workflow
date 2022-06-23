@@ -14,7 +14,12 @@
           </BCol>
           <BCol>
             <BFormGroup label="Тип:" label-for="basicInput">
-              <BFormSelect v-model="selected" :options="options" />
+              <v-select
+                v-model="selected"
+                :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
+                label="title"
+                :options="option"
+              />
             </BFormGroup>
           </BCol>
           <BCol cols="2">
@@ -67,6 +72,7 @@
         <div class="d-flex align-items-center mb-0 mt-1">
           <span class="text-nowrap">Показать от 1 до</span>
           <BFormSelect
+          
             v-model="filterData.page_size"
             @input="fetchData"
             :options="['1', '10', '20', '30']"
@@ -105,6 +111,7 @@
 
 <script>
 import AddShopName from './components/AddShopName.vue';
+import vSelect from 'vue-select';
 
 import {
   BCard,
@@ -132,16 +139,13 @@ export default {
     BTable,
     BPagination,
     BAvatar,
+    vSelect,
     AddShopName,
   },
   data() {
     return {
       selected: null,
-      options: [
-        { value: null, text: 'Любой' },
-        { value: 'a', text: 'С кешбэком' },
-        { value: 'b', text: 'Без кешбэка' },
-      ],
+      option: [{ title: 'С кешбэком' }, { title: 'Без кешбэка' }],
       filterData: {
         search: '',
         page: 1,
@@ -230,7 +234,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import '@core/scss/vue/libs/vue-select.scss';
 .main_image {
   max-height: 120px;
   max-width: 200px;

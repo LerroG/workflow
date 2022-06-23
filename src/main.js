@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import { ToastPlugin, ModalPlugin } from 'bootstrap-vue'
 import VueCompositionAPI from '@vue/composition-api'
+import VueFileAgent from 'vue-file-agent';
+
+
 
 import router from './router'
 import store from './store'
@@ -19,6 +22,7 @@ Vue.use(ModalPlugin)
 
 // Composition API
 Vue.use(VueCompositionAPI)
+Vue.use(VueFileAgent);
 
 // import core styles
 require('@core/scss/core.scss')
