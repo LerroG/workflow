@@ -12,7 +12,7 @@ export function getShopList(query) {
 
 export function createShopList(data) {
   return http({
-    url: "/",
+    url: "/marked/marked/",
     method: "post",
     data
   })

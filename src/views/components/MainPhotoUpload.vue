@@ -1,23 +1,29 @@
 <template>
-  
-  <BContainer>
-    
-    <BImg  rounded fluid :src="dataAvatar" thumbnail/>
-<BRow class="d-flex justify-content-between">
-    <BCol>
-    <div class=" mt-1 flex-wrap mb-1">
-      <BFormFile
-        style="width: 70%"
-        v-model="profile_picture"
-        placeholder="Имя файла"
-        browseText="Выбрать"
-        @input="fileInput"
-      />
-    </div>
-    </BCol>
-       <BCol cols="4"><b-button variant="danger" class="mt-1" @click="clearImage"><feather-icon icon="Trash2Icon" size="16" /></b-button></BCol>
-  </BRow>
-<!-- <BFormFile
+  <BContainer class="mt-2">
+    <BImg id="main_img" fluid :src="dataAvatar" thumbnail />
+    <BRow class="d-flex justify-content-between">
+      <BButton @click="upload">asdasd</BButton>
+      <BCol>
+        <div class="mt-1 flex-wrap mb-1">
+          <BFormFile
+            style="width: 70%"
+            v-model="formData.main_photo"
+            placeholder="Имя файла"
+            browseText="Выбрать"
+            @input="fileInput"
+          />
+        </div>
+      </BCol>
+      <BCol cols="4" class="d-flex justify-content-end"
+        ><b-button
+          variant="danger"
+          class="mt-1"
+          @click="clearImage"
+          style="height: 36px"
+          ><feather-icon icon="Trash2Icon" size="16" /></b-button
+      ></BCol>
+    </BRow>
+    <!-- <BFormFile
         multiple
         v-model="files"
         placeholder="Имя файла"
@@ -30,6 +36,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import {
   BFormGroup,
   BImg,
@@ -38,8 +45,7 @@ import {
   BCol,
   BRow,
   BContainer,
-  BButton
-
+  BButton,
 } from 'bootstrap-vue';
 
 export default {
@@ -51,17 +57,18 @@ export default {
     BCol,
     BRow,
     BContainer,
-    BButton
+    BButton,
   },
   data() {
     return {
       dataAvatar: '',
-      profile_picture: null,
-      
-      
+      formData: {
+        main_photo: null,
+      },
     };
   },
   methods: {
+    ...mapActions('shopList', ['ADD_SHOP_LIST']),
     fileInput(file) {
       let reader = new FileReader();
       reader.readAsDataURL(file);
@@ -69,14 +76,22 @@ export default {
     },
     clearImage() {
       this.dataAvatar = null;
-      this.profile_picture = null;
+      this.formData.main_photo = null;
+    },
+    async upload() {
+      let { main_photo } = this.formData;
+      let req = new FormData();
+      req.append('main_photo', main_photo);
+      this.ADD_SHOP_LIST(req)
+        .then(() => {
+          console.log('Не сосать');
+        })
+        .catch(() => {
+          console.log('Cосать');
+        })
     },
   },
 };
 </script>
 
-<style>
-thumbnail {
-  height: 100;
-  width: 100;
-}</style>
+<style></style>

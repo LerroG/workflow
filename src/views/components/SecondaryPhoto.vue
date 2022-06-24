@@ -1,80 +1,132 @@
 <template>
-<div>
-  <VueFileAgent
-    ref="vueFileAgent"
-    :theme="'grid'"
-    :multiple="true"
-    :deletable="true"
-    :meta="false"
-    :accept="'image/*,'"
-    :maxSize="'10MB'"
-    :maxFiles="14"
-    :helpText="'Выбрать файл'"
-    :errorText="{
-      type: 'Неверный тип файла. Разрешены только изображения',
-      size: 'Размер файлов не должен превышать 10 МБ.',
-    }"
-    @select="filesSelected($event)"
-    @beforedelete="onBeforeDelete($event)"
-    @delete="fileDeleted($event)"
-    v-model="fileRecords"
-  ></VueFileAgent>
-  <!-- <button :disabled="!fileRecordsForUpload.length" @click="uploadFiles()">
-    Upload {{ fileRecordsForUpload.length }} files
+  <div>
+    <VueFileAgent
+      ref="vueFileAgent"
+      :theme="'grid'"
+      :multiple="true"
+      :deletable="true"
+      :meta="false"
+      :accept="'image/*,'"
+      :maxSize="'10MB'"
+      :maxFiles="14"
+      :helpText="'Выбрать файл'"
+      :errorText="{
+        type: 'Неверный тип файла. Разрешены только изображения',
+        size: 'Размер файлов не должен превышать 10 МБ.',
+      }"
+      @select="filesSelected($event)"
+      @beforedelete="onBeforeDelete($event)"
+      @delete="fileDeleted($event)"
+      v-model="formData.second_photo"
+    ></VueFileAgent>
+
+    <BButton @click="upload"> Отправить</BButton>
+
+    <!-- <button :disabled="!second_photo.length" @click="uploadFiles()">
+    Upload {{ second_photo.length }} files
   </button> -->
-</div>
+  </div>
 </template>
 
 <script>
-import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css'
+import VueFileAgentStyles from 'vue-file-agent/dist/vue-file-agent.css';
+import { BButton } from 'bootstrap-vue';
+import { mapActions } from 'vuex';
+
 export default {
-data: function () {
-      return {
-        fileRecords: [],
-        uploadUrl: 'https://www.mocky.io/v2/5d4fb20b3000005c111099e3',
-        uploadHeaders: { 'X-Test-Header': 'vue-file-agent' },
-        fileRecordsForUpload: [], // maintain an upload queue
-      };
+  components: {
+    BButton,
+  },
+  data: function () {
+    return {
+      formData: {
+        second_photo: [],
+      },
+      uploadUrl: 'http://192.168.31.99:8000/api/v1/marked/marked/',
+
+      second_photo: [], // maintain an upload queue
+    };
+  },
+  watch: {
+    'formData.second_photo'(value) {
+      this.$emit('change', this.formData);
     },
-    methods: {
-      // uploadFiles: function () {
-      //   // Using the default uploader. You may use another uploader instead.
-      //   this.$refs.vueFileAgent.upload(this.uploadUrl, this.uploadHeaders, this.fileRecordsForUpload);
-      //   this.fileRecordsForUpload = [];
-      // },
-      deleteUploadedFile: function (fileRecord) {
-        // Using the default uploader. You may use another uploader instead.
-        this.$refs.vueFileAgent.deleteUpload(this.uploadUrl, this.uploadHeaders, fileRecord);
-      },
-      filesSelected: function (fileRecordsNewlySelected) {
-        var validFileRecords = fileRecordsNewlySelected.filter((fileRecord) => !fileRecord.error);
-        this.fileRecordsForUpload = this.fileRecordsForUpload.concat(validFileRecords);
-      },
-      onBeforeDelete: function (fileRecord) {
-        var i = this.fileRecordsForUpload.indexOf(fileRecord);
-        if (i !== -1) {
+  },
+  methods: {
+    ...mapActions('shopList', ['ADD_SHOP_LIST']),
+
+    async upload() {
+      let { second_photo } = this.formData;
+      let req = new FormData();
+      second_photo.forEach((item) => {
+        req.append('second_photo', item.file);
+      });
+      // req.append('second_photo', second_photo);
+      this.ADD_SHOP_LIST(req)
+        .then(() => {
+          console.log('Не сосать');
+        })
+        .catch(() => {
+          console.log('Cосать');
+        });
+    },
+    deleteUploadedFile: function (second_photo) {
+      // Using the default uploader. You may use another uploader instead.
+      this.$refs.vueFileAgent.deleteUpload(
+        this.uploadUrl,
+        this.uploadHeaders,
+        second_photo
+      );
+    },
+    filesSelected: function (fileRecordsNewlySelected) {
+      var validFileRecords = fileRecordsNewlySelected.filter(
+        (second_photo) => !second_photo.error
+      );
+      this.second_photo = this.second_photo.concat(validFileRecords);
+    },
+    onBeforeDelete: function (second_photo) {
+      var i = this.second_photo.indexOf(second_photo);
+      if (i !== -1) {
         // queued file, not yet uploaded. Just remove from the arrays
-          this.fileRecordsForUpload.splice(i, 1);
-          var k = this.fileRecords.indexOf(fileRecord);
-          if (k !== -1) this.fileRecords.splice(k, 1);
-        } else {
-          if (confirm('Are you sure you want to delete?')) {
-            this.$refs.vueFileAgent.deleteFileRecord(fileRecord); // will trigger 'delete' event
-          }
+        this.second_photo.splice(i, 1);
+        var k = this.second_photo.indexOf(fileRecord);
+        if (k !== -1) this.second_photo.splice(k, 1);
+      } else {
+        if (confirm('Are you sure you want to delete?')) {
+          this.$refs.vueFileAgent.deleteFileRecord(second_photo); // will trigger 'delete' event
         }
-      },
-      fileDeleted: function (fileRecord) {
-        var i = this.fileRecordsForUpload.indexOf(fileRecord);
-        if (i !== -1) {
-          this.fileRecordsForUpload.splice(i, 1);
-        } else {
-          this.deleteUploadedFile(fileRecord);
-        }
-      },
+      }
     },
-}
+    fileDeleted: function (second_photo) {
+      var i = this.second_photo.indexOf(second_photo);
+      if (i !== -1) {
+        this.second_photo.splice(i, 1);
+      } else {
+        this.deleteUploadedFile(second_photo);
+      }
+    },
+    // submitFiles(){
+    //     let formData = new FormData();
+    //     for( var i = 0; i < this.files.length; i++ ){
+    //       let file = this.second_photo[i];
+    //       formData.append('second_photo[' + i + ']', file);
+    //     }
+    //     axios.post( '/marked/marked/',
+    //       formData,
+    //       {
+    //         headers: {
+    //             'Content-Type': 'multipart/form-data'
+    //         }
+    //       }
+    //     ).then(function(){
+    //       console.log('SUCCESS!!');
+    //     })
+    //     .catch(function(){
+    //       console.log('FAILURE!!');
+    //     });
+    //   },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

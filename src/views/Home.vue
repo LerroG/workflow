@@ -157,15 +157,24 @@ export default {
           label: 'Фото',
         },
         {
+          key: 'type',
+          label: 'Тип',
+          sortable: true,
+        },
+        {
           key: 'title',
           label: 'Название',
           sortable: true,
         },
         {
-          key: 'type',
-          label: 'Тип',
-          sortable: true,
+          key: 'district',
+          label: 'Район',
         },
+        {
+          key: 'adress',
+          label: 'Адрес',
+        },
+        
         {
           key: 'phone',
           label: 'Телефоны',
@@ -186,6 +195,8 @@ export default {
         {
           photo: 'Фото 1',
           title: 'Название 1',
+          district: 'Алмазарский район',
+          adress: 'фывфывфывфв123',
           type: 'С кешбэком',
           phone: '+998973444444',
           working_hours: '24/7',
@@ -195,6 +206,8 @@ export default {
         {
           photo: 'Фото 2',
           title: 'Название 2',
+          district: 'Бектемирский район',
+          adress: 'фывфывфывфв123',
           type: 'Без кешбэка',
           phone: '+998973444444',
           working_hours: '24/5',
@@ -204,6 +217,8 @@ export default {
         {
           photo: 'Фото 3',
           title: 'Название 3',
+          district: 'Мирабадский район',
+          adress: 'фывфывфывфв123',
           type: 'С кешбэком',
           phone: '+998973444444',
           working_hours: '24/7',
@@ -213,6 +228,8 @@ export default {
         {
           photo: 'Фото 4',
           title: 'Название 4',
+          district: 'Сергелийский район',
+          adress: 'фывфывфывфв123',
           type: 'Без кешбэка',
           phone: '+998973444444',
           working_hours: '24/6',
@@ -237,9 +254,8 @@ export default {
 <style lang="scss">
 @import '@core/scss/vue/libs/vue-select.scss';
 .main_image {
-  max-height: 120px;
-  max-width: 200px;
-  min-height: 120px;
-  min-width: 200px;
+  height: 65px;
+  width: 100px;
+ 
 }
 </style>
