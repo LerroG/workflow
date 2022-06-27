@@ -1,20 +1,20 @@
 <template>
   <div>
     <BModal
-      id="modal-location"
+      id="modal-addlocation"
       @shown="reloadMap()"
       no-close-on-backdrop
       centered
       size="lg"
-      ok-only
-      ok-title="Назад"
-      
+      @ok="submit"
+      ok-title="Подтвердить"
+      cancel-title="Отмена"
     >
       <div style="height: 60vh; width: 10wh">
         <l-map
           ref="map"
           :zoom="zoom"
-          
+          @click="setMarker"
           :center="center"
           @update:zoom="zoomUpdated"
           @update:center="centerUpdated"
@@ -93,8 +93,14 @@ export default {
     //     this.markers.push(event.latlng);
     //   }
     // },
-    
-    
+    setMarker(event) {
+      this.marker = event.latlng;
+    },
+    submit() {
+      let { lat, lng } = this.marker;
+      let context = { lat, lng };
+      this.$emit('submit', context);
+    },
   },
 };
 </script>

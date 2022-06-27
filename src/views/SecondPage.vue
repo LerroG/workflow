@@ -6,11 +6,11 @@
           <BRow class="d-flex justify-content-between mt-3" cols="12" xl="12">
             <BCol cols="12" md="12" xl="6">
               <div>
-                <MainPhotoUpload />
+                <MainPhotoUpload @changeMain="formData.main_photo"/>
               </div>
-              <BRow class="mt-3">
+              <BRow class="mt-3 mb-3">
                 <BCol class="d-flex justify-content-start">
-                  <SecondaryPhoto @change="log" />
+                  <SecondaryPhoto @changeSecond="formData.second_photo" />
                 </BCol>
               </BRow>
             </BCol>
@@ -25,7 +25,7 @@
                       rules="required"
                     >
                       <v-select
-                        v-model="selected"
+                        v-model="formData.type"
                         :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                         label="title"
                         :options="option"
@@ -35,26 +35,14 @@
                     </ValidationProvider>
                   </BFormGroup>
                 </BCol>
-                <BCol class="d-flex justify-content-center" cols="4">
+                <BCol class="d-flex justify-content-end " cols="2">
                   <BFormGroup>
                     <label style="font-size: 14px">Локация:</label><br />
-                    <!-- <ValidationProvider
-
-                    #default="{ errors }"
-                    name='"Локация"'
-                    rules="required"
-                  >
-                    <BFormInput
-                      v-model="formData.location"
-                      placeholder="Локация"
-                      
-                    />
-
-                    <small class="text-danger">{{ errors[0] }}</small>
-                  </ValidationProvider> -->
+                    
                     <BButton
+                    
                       style="width: 70px"
-                      v-b-modal.modal-location
+                      v-b-modal.modal-addlocation
                       variant="success"
                       ><feather-icon icon="MapPinIcon" size="16" />
                     </BButton>
@@ -88,7 +76,7 @@
                       rules="required"
                     >
                       <v-select
-                        v-model="selected1"
+                        v-model="formData.district"
                         :dir="$store.state.appConfig.isRTL ? 'rtl' : 'ltr'"
                         label="title"
                         :options="option1"
@@ -128,7 +116,7 @@
                     >
                       <BFormInput
                         placeholder="График работы"
-                        v-model="formData.firstName"
+                        v-model="formData.working_hours"
                         v-b-modal.modal-workHours
                       />
                       <small class="text-danger">{{ errors[0] }}</small>
@@ -144,11 +132,11 @@
                       name='"Номер телефона"'
                       rules="required"
                     >
-                      <b-form-tags
+                      <BFormTags
                         placeholder="Номер телефона"
-                        v-model="values"
-                        input-id="tags-basic"
-                        input="replace(/[^\d.]/g, '')"
+                        v-model="formData.phoneNumbers"
+                        remove-on-delete
+                        
                       />
 
                       <small class="text-danger">{{ errors[0] }}</small>
@@ -175,6 +163,7 @@
                 type="submit"
                 variant="outline-primary"
                 class="ml-1 btn_hover"
+                @click="submitEdit"
                 >Отправить
               </BButton>
             </BCol>
@@ -182,7 +171,7 @@
         </BForm>
 
         <LocationModal @submit="(latlng) => (formData.location = latlng)" />
-        <WorkingHours />
+        <WorkingHours  @workDays="(workDays) => (formData.working_hours = workDays)"/>
       </ValidationObserver>
     </BCard>
   </div>
@@ -192,9 +181,10 @@
 import { required, email } from '@validations';
 import MainPhotoUpload from './components/MainPhotoUpload.vue';
 import SecondaryPhoto from './components/SecondaryPhoto.vue';
-import LocationModal from './components/LocationModal.vue';
+import LocationModal from './components/AddLocationModal.vue';
 import WorkingHours from './components/WorkingHours.vue';
 import vSelect from 'vue-select';
+import {mapActions} from 'vuex'
 
 import {
   BCard,
@@ -208,6 +198,7 @@ import {
   BFormTextarea,
   BFormTags,
 } from 'bootstrap-vue';
+import { title } from '@/@core/utils/filter';
 
 export default {
   components: {
@@ -248,25 +239,64 @@ export default {
         { title: 'Янгихаётский район' },
         { title: 'Яшнабадский район' },
       ],
-      values: [],
+      
 
       formData: {
         title: '',
-        firstName: '',
+        working_hours: '',
         location: {},
         adress: '',
-        addressPass: '',
-        nationality: '',
-
-        email: '',
+        phoneNumbers: [],
+        district: '',
+        type: '',
+        main_photo: {},
+        second_photo: [],
       },
-      phoneNumbers: [{ phoneNumber: '' }],
+      // phoneNumbers: [{ phoneNumber: '' }],
     };
   },
   methods: {
-    log(v) {
-      console.log(v);
-    },
+    ...mapActions('shopList', ['EDIT_SHOP_LIST']),
+
+
+    async submitEdit() {
+      
+      // let {
+      //   title,
+      //   main_image,
+      //   second_image,
+      //   location,
+      //   type,
+      //   district,
+      //   adress,
+      //   working_hours,
+      //   phoneNumbers,
+      // } = this.formData
+      // 
+      // let req = {
+      //   title,
+      //   main_image,
+      //   second_image,
+      //   location,
+      //   type,
+      //   district,
+      //   adress,
+      //   working_hours,
+      //   phoneNumbers,
+      // }
+      // this.EDIT_SHOP_LIST(req)
+      // .then(() => {
+    
+      // console.log("OK") 
+      // })
+      // .catch((err) => {
+// console.log("NO")
+      // })
+    }
+
+    // log(v) {
+    //   console.log(v);
+    // },
     // addRow() {
     //   let item = {
     //     phoneNumber: '',

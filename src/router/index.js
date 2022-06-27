@@ -25,7 +25,7 @@ const router = new VueRouter({
       },
     },
     {
-      path: '/second-page',
+      path: '/second-page/',
       name: 'second-page',
       component: () => import('@/views/SecondPage.vue'),
       meta: {

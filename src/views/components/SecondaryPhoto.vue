@@ -20,7 +20,7 @@
       v-model="formData.second_photo"
     ></VueFileAgent>
 
-    <BButton @click="upload"> Отправить</BButton>
+    <!-- <BButton @click="upload"> Отправить</BButton> -->
 
     <!-- <button :disabled="!second_photo.length" @click="uploadFiles()">
     Upload {{ second_photo.length }} files
@@ -49,7 +49,7 @@ export default {
   },
   watch: {
     'formData.second_photo'(value) {
-      this.$emit('change', this.formData);
+      this.$emit('changeSecond', this.formData);
     },
   },
   methods: {
@@ -64,10 +64,10 @@ export default {
       // req.append('second_photo', second_photo);
       this.ADD_SHOP_LIST(req)
         .then(() => {
-          console.log('Не сосать');
+          console.log('Успешно');
         })
         .catch(() => {
-          console.log('Cосать');
+          console.log('Неудача');
         });
     },
     deleteUploadedFile: function (second_photo) {

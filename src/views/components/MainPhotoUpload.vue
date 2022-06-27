@@ -2,7 +2,7 @@
   <BContainer class="mt-2">
     <BImg id="main_img" fluid :src="dataAvatar" thumbnail />
     <BRow class="d-flex justify-content-between">
-      <BButton @click="upload">asdasd</BButton>
+      <!-- <BButton @click="upload">asdasd</BButton> -->
       <BCol>
         <div class="mt-1 flex-wrap mb-1">
           <BFormFile
@@ -66,6 +66,11 @@ export default {
         main_photo: null,
       },
     };
+  },
+  watch: {
+    'formData.main_photo'(value) {
+      this.$emit('changeMain', this.formData);
+    },
   },
   methods: {
     ...mapActions('shopList', ['ADD_SHOP_LIST']),

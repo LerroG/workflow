@@ -9,6 +9,12 @@ export function getShopList(query) {
     params: query
   })
 }
+export function getOneShopList(id) {
+  return http({
+    url: `//${id}`,
+    method: "get",
+  })
+}
 
 export function createShopList(data) {
   return http({
@@ -31,5 +37,14 @@ export function deleteShopList(query) {
     url: "/",
     method: "delete",
     params: query,
+  })
+}
+
+
+export function getShopList2(query) {
+  return http({
+    url: "/shoplist/",
+    method: "get",
+    params: query
   })
 }
