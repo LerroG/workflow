@@ -6,7 +6,7 @@
           <BRow class="d-flex justify-content-between mt-3" cols="12" xl="12">
             <BCol cols="12" md="12" xl="6">
               <div>
-                <MainPhotoUpload @changeMain="formData.main_photo"/>
+                <MainPhotoUpload @changeMain="formData.main_photo" />
               </div>
               <BRow class="mt-3 mb-3">
                 <BCol class="d-flex justify-content-start">
@@ -35,12 +35,11 @@
                     </ValidationProvider>
                   </BFormGroup>
                 </BCol>
-                <BCol class="d-flex justify-content-end " cols="2">
+                <BCol class="d-flex justify-content-end" cols="2">
                   <BFormGroup>
                     <label style="font-size: 14px">Локация:</label><br />
-                    
+
                     <BButton
-                    
                       style="width: 70px"
                       v-b-modal.modal-addlocation
                       variant="success"
@@ -109,18 +108,57 @@
               <BRow>
                 <BCol>
                   <BFormGroup label="График работы:">
-                    <ValidationProvider
+                    <!-- <ValidationProvider
                       #default="{ errors }"
                       name='"График работы"'
                       rules="required"
-                    >
-                      <BFormInput
+                    > -->
+                    <!-- <BFormInput
                         placeholder="График работы"
                         v-model="formData.working_hours"
                         v-b-modal.modal-workHours
+                      /> -->
+                    <!-- <BFormTags
+                        placeholder=""
+                        v-model="formData.working_hours"
+                        remove-on-delete
+                        
+                        
+                      >
+                      <template v-slot="{ tags, inputAttrs, inputHandlers, tagVariant, removeTag }">
+        <b-input-group class="mb-2">
+          <b-form-input
+            v-bind="inputAttrs"
+            v-on="inputHandlers"
+            placeholder="New tag - Press enter to add"
+            class="form-control"
+          ></b-form-input>
+          
+        </b-input-group>
+        <div class="d-inline-block" style="font-size: 1.5rem;">
+          <b-form-tag
+            v-for="tag in tags"
+            @remove="removeTag(tag)"
+            :key="tag"
+            :title="tag"
+            :variant="tagVariant"
+            class="mr-1"
+          >{{ tag }}</b-form-tag>
+        </div>
+      </template>
+      </BFormTags> -->
+                    <b-form-group>
+                      {{ formData.working_hours }}
+                      <b-form-input
+                        v-model="formData.working_hours"
+                        id="readOnlyInput"
+                        value=""
+                        readonly
                       />
-                      <small class="text-danger">{{ errors[0] }}</small>
-                    </ValidationProvider>
+                    </b-form-group>
+                    <BButton v-b-modal.modal-workHours> Изменить </BButton>
+                    <!-- <small class="text-danger">{{ errors[0] }}</small>
+                    </ValidationProvider> -->
                   </BFormGroup>
                 </BCol>
               </BRow>
@@ -136,7 +174,6 @@
                         placeholder="Номер телефона"
                         v-model="formData.phoneNumbers"
                         remove-on-delete
-                        
                       />
 
                       <small class="text-danger">{{ errors[0] }}</small>
@@ -169,9 +206,11 @@
             </BCol>
           </BRow>
         </BForm>
-
-        <LocationModal @submit="(latlng) => (formData.location = latlng)" />
-        <WorkingHours  @workDays="(workDays) => (formData.working_hours = workDays)"/>
+        {{ formData.working_hours }}
+        <AddLocationModal @submit="(latlng) => (formData.location = latlng)" />
+        <WorkingHours
+          @workDays="(workDays) => (formData.working_hours = workDays)"
+        />
       </ValidationObserver>
     </BCard>
   </div>
@@ -181,10 +220,10 @@
 import { required, email } from '@validations';
 import MainPhotoUpload from './components/MainPhotoUpload.vue';
 import SecondaryPhoto from './components/SecondaryPhoto.vue';
-import LocationModal from './components/AddLocationModal.vue';
+import AddLocationModal from './components/AddLocationModal.vue';
 import WorkingHours from './components/WorkingHours.vue';
 import vSelect from 'vue-select';
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex';
 
 import {
   BCard,
@@ -197,8 +236,11 @@ import {
   BForm,
   BFormTextarea,
   BFormTags,
+  BInputGroup,
+  BFormTag,
 } from 'bootstrap-vue';
-import { title } from '@/@core/utils/filter';
+import { formatDate, title } from '@/@core/utils/filter';
+import { computed } from 'vue-demi';
 
 export default {
   components: {
@@ -212,11 +254,13 @@ export default {
     BForm,
     BFormTextarea,
     BFormTags,
+    BInputGroup,
+    BFormTag,
     WorkingHours,
     vSelect,
     MainPhotoUpload,
     SecondaryPhoto,
-    LocationModal,
+    AddLocationModal,
   },
   data() {
     return {
@@ -239,11 +283,10 @@ export default {
         { title: 'Янгихаётский район' },
         { title: 'Яшнабадский район' },
       ],
-      
 
       formData: {
         title: '',
-        working_hours: '',
+        working_hours: [],
         location: {},
         adress: '',
         phoneNumbers: [],
@@ -252,15 +295,16 @@ export default {
         main_photo: {},
         second_photo: [],
       },
+      
       // phoneNumbers: [{ phoneNumber: '' }],
     };
+    
   },
+  
   methods: {
     ...mapActions('shopList', ['EDIT_SHOP_LIST']),
 
-
     async submitEdit() {
-      
       // let {
       //   title,
       //   main_image,
@@ -272,7 +316,7 @@ export default {
       //   working_hours,
       //   phoneNumbers,
       // } = this.formData
-      // 
+      //
       // let req = {
       //   title,
       //   main_image,
@@ -286,13 +330,12 @@ export default {
       // }
       // this.EDIT_SHOP_LIST(req)
       // .then(() => {
-    
-      // console.log("OK") 
+      // console.log("OK")
       // })
       // .catch((err) => {
-// console.log("NO")
+      // console.log("NO")
       // })
-    }
+    },
 
     // log(v) {
     //   console.log(v);

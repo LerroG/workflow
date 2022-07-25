@@ -84,6 +84,8 @@
           </div>
         </template> -->
       </BTable>
+      
+
     </BCard>
 
     <AddShopName />
@@ -95,7 +97,7 @@
 <script>
 import AddShopName from './components/AddShopName.vue';
 import LocationModal from './components/LocationModal.vue';
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 import vSelect from 'vue-select';
 
@@ -240,7 +242,7 @@ export default {
     };
   },
   computed: {
-    ...mapState('shopList', ['shoplist_two']),
+    ...mapGetters('shopList', ['SHOPLIST']),
   },
   mounted() {
     this.FETCH_SHOP_LIST_TWO();

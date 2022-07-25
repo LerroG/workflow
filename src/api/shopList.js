@@ -4,7 +4,7 @@ import http from "@/libs/axios";
 
 export function getShopList(query) {
   return http({
-    url: "/",
+    url: "/marked/marked/",
     method: "get",
     params: query
   })
